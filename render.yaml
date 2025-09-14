@@ -7,7 +7,7 @@ services:
   # Frontend Service
   # Deploys the React app as a Static Site
   # ------------------
-  - type: static
+  - type: static_site # CORRECTED: Changed from "static" to "static_site"
     name: medical-chatbot-ui
     env: static
     # Specifies that the frontend code is in the 'frontend' directory
@@ -17,7 +17,7 @@ services:
     # The folder containing the built static files
     publishDir: dist
     # Routing rule to proxy API requests to the backend.
-    # IMPORTANT: You must update the 'destination' URL below after your first deploy.
+    # IMPORTANT: You will update the 'destination' URL below after your first deploy.
     routes:
       - type: rewrite
         source: /get
