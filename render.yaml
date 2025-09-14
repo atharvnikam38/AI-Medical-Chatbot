@@ -1,0 +1,46 @@
+# Render Blueprint for Full-Stack Deployment
+# This file defines both the React frontend and the Python backend services.
+# It automatically configures them to work together in production.
+
+services:
+  # ------------------
+  # Frontend Service
+  # Deploys the React app as a Static Site
+  # ------------------
+  - type: static
+    name: medical-chatbot-ui
+    env: static
+    # Specifies that the frontend code is in the 'frontend' directory
+    rootDir: frontend
+    # Commands to build the frontend for production
+    buildCommand: npm install && npm run build
+    # The folder containing the built static files
+    publishDir: dist
+    # Routing rule to proxy API requests to the backend.
+    # IMPORTANT: You must update the 'destination' URL below after your first deploy.
+    routes:
+      - type: rewrite
+        source: /get
+        destination: https://replace-this-with-your-real-backend-url.onrender.com/get
+
+  # ------------------
+  # Backend Service
+  # Deploys the Python Flask app as a Web Service
+  # ------------------
+  - type: web
+    name: medical-chatbot-backend
+    env: python
+    # Specifies that the backend code is in the 'backend' directory
+    rootDir: backend
+    # Command to install Python dependencies
+    buildCommand: pip install -r requirements.txt
+    # Command to start the production server
+    startCommand: gunicorn --workers 4 --bind 0.0.0.0:$PORT app:app
+    # Specifies which environment variables to use.
+    # The values will be set as Secrets in the Render dashboard.
+    envVars:
+      - key: PINECONE_API_KEY
+        fromSecret: true
+      - key: GROQ_API_KEY
+        fromSecret: true
+
